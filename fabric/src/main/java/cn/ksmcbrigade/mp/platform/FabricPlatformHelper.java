@@ -3,6 +3,12 @@ package cn.ksmcbrigade.mp.platform;
 import cn.ksmcbrigade.mp.Constants;
 import cn.ksmcbrigade.mp.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.impl.discovery.RuntimeModRemapper;
+import net.fabricmc.loader.impl.launch.FabricLauncher;
+import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import net.fabricmc.loader.impl.lib.mappingio.tree.MappingTree;
+
+import java.util.Objects;
 
 public class FabricPlatformHelper implements IPlatformHelper {
 
@@ -29,5 +35,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public boolean isDevelopmentEnvironment() {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public String getObfName(String name) {
+        return name;
     }
 }

@@ -32,8 +32,9 @@ public class ForgePlatformHelper implements IPlatformHelper {
             Method isLoadedM = modListC.getMethod("isLoaded", String.class);
 
             Object modList = getM.invoke(null);
-            return (boolean) isLoadedM.invoke(modList,modId);
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            return (boolean) isLoadedM.invoke(modList, modId);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             Constants.LOG.info("Failed to invoke ModList::get or ModList::isLoaded.");
             return false;
         }
@@ -46,9 +47,15 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
             Method isProductionM = loaderC.getMethod("isProduction");
             return !((boolean) isProductionM.invoke(null));
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             Constants.LOG.info("Failed to invoke FMLLoader::isProtection");
             return false;
         }
+    }
+
+    @Override
+    public String getObfName(String name) {
+        return name;
     }
 }

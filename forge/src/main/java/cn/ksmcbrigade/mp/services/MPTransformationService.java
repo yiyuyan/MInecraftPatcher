@@ -12,7 +12,7 @@ import java.util.Set;
 public class MPTransformationService implements ITransformationService {
 
     static {
-        CommonClass.loadAgent();
+        CommonClass.init();
     }
 
     @Override

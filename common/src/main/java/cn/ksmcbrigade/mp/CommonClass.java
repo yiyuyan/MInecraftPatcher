@@ -47,7 +47,8 @@ public class CommonClass {
             return MOD_FILE_FOR_DEVELOPMENT;
         }
         else{
-            return UnsafeUtils.getJarPath(CommonClass.class);
+            return UnsafeUtils.getJarPath(CommonClass.class)
+                    .substring(Services.PLATFORM.getPlatformName().equalsIgnoreCase("Forge")?6:0);
         }
     }
 }

@@ -28,6 +28,8 @@ public interface IPlatformHelper {
      */
     boolean isDevelopmentEnvironment();
 
+    String getObfName(String name);
+
     /**
      * Gets the name of the environment type as a string.
      *

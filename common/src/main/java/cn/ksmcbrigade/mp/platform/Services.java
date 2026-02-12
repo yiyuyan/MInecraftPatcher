@@ -65,6 +65,11 @@ public class Services {
                 return new File(System.getProperty("user.dir")).getParentFile().getParentFile().getName().equals("run");
             }
 
+            @Override
+            public String getObfName(String name) {
+                return name;
+            }
+
         });
         Constants.LOG.debug("Loaded {} for service {}", loadedService, clazz);
         return loadedService;

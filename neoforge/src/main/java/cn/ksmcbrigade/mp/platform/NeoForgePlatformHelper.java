@@ -51,4 +51,9 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
             return false;
         }
     }
+
+    @Override
+    public String getObfName(String name) {
+        return name;
+    }
 }

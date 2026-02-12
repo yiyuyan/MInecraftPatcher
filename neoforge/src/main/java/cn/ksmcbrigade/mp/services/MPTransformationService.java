@@ -11,19 +11,17 @@ import java.util.Set;
 
 public class MPTransformationService implements ITransformationService {
 
+    static {
+        CommonClass.init();
+    }
+
     @Override
     public @NotNull String name() {
         return "MPAgentLoader";
     }
 
     @Override
-    public void initialize(IEnvironment iEnvironment) {
-        try {
-            CommonClass.init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    public void initialize(IEnvironment iEnvironment) {}
 
     @Override
     public void onLoad(IEnvironment iEnvironment, Set<String> set) {
