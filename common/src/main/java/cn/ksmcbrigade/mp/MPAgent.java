@@ -107,7 +107,7 @@ public class MPAgent {
         int read = 0;
 
         byte[] buffer = new byte[1024];
-        while((read = inputStream.read())!=-1){
+        while((read = inputStream.read(buffer,0,1024))!=-1){
             outputStream.write(buffer,0,read);
         }
 
