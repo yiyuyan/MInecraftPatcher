@@ -8,6 +8,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/forge/MInecraftPatcher.forge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/forge/MInecraftPatcher.forge.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/forge/MInecraftPatcher.forge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/forge/MInecraftPatcher.forge.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/neoforge/MInecraftPatcher.neoforge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/neoforge/MInecraftPatcher.neoforge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fabric/cn.ksmcbrigade.MInecraftPatcher.fabric.main.iml" filepath="$PROJECT_DIR$/.idea/modules/fabric/cn.ksmcbrigade.MInecraftPatcher.fabric.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fabric/cn.ksmcbrigade.MInecraftPatcher.fabric.test.iml" filepath="$PROJECT_DIR$/.idea/modules/fabric/cn.ksmcbrigade.MInecraftPatcher.fabric.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/forge/cn.ksmcbrigade.MInecraftPatcher.forge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/forge/cn.ksmcbrigade.MInecraftPatcher.forge.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neoforge/cn.ksmcbrigade.MInecraftPatcher.neoforge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/neoforge/cn.ksmcbrigade.MInecraftPatcher.neoforge.main.iml" />
     </modules>
   </component>
 </project>
