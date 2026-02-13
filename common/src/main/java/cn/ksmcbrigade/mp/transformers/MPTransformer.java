@@ -3,15 +3,9 @@ package cn.ksmcbrigade.mp.transformers;
 import cn.ksmcbrigade.mp.MPAgent;
 import com.sun.jna.platform.KeyboardUtils;
 import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.User32Util;
-import io.netty.channel.epoll.Native;
 import org.apache.commons.io.FileUtils;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.ClassFileTransformer;
