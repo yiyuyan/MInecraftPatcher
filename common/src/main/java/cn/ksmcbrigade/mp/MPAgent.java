@@ -126,11 +126,11 @@ public class MPAgent {
                                     LOGGER.warn("Ignoring java file(s) information {} because the bytes is null.",file);
                                     return;
                                 }
-                                File onlineFile = javaDir.toPath().resolve("/"+CompileUtils.getFullClassName(bytes).replace(".","/")+"_online").toFile();
+                                File onlineFile = javaDir.toPath().resolve("/"+CompileUtils.getFullClassName(bytes).replace(".","/")+".java").toFile();
                                 FileUtils.writeByteArrayToFile(onlineFile,bytes);
                                 File compiledFile = CompileUtils.compile(onlineFile);
                                 if(!compiledFile.exists()) LOGGER.error("Failed to compile {} from {}",onlineFile,jsonElement);
-                                LOGGER.info("Compiled {} from {}",file,jsonElement);
+                                LOGGER.info("Compiled {} from {}",jsonElement,file);
                             } catch (Throwable e) {
                                 LOGGER.error("Failed to load {} from {}",jsonElement,file,e);
                             }

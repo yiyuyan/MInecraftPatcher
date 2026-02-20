@@ -1,5 +1,6 @@
 package cn.ksmcbrigade.mp.utils;
 
+import cn.ksmcbrigade.mp.MPAgent;
 import org.apache.commons.io.FileUtils;
 
 import javax.tools.JavaCompiler;
@@ -78,5 +79,29 @@ public class CompileUtils {
         );
         matcher = simplePattern.matcher(content);
         return matcher.find() ? matcher.group(1) : null;
+    }
+
+    public static void decompileThread(File file,File toFile){
+        new Thread(()->{
+            try {
+                File cfrTool = new File("cfr.jar");
+                File javaw = new File(System.getProperty("java.home")+"/bin/javaw");
+                if(!cfrTool.exists()){
+                    MPAgent.LOGGER.error("{} not found.",cfrTool);
+                }
+                else{
+                    ProcessBuilder builder = new ProcessBuilder(javaw.getAbsolutePath(),
+                            "-jar",
+                            cfrTool.getAbsolutePath(),
+                            file.getAbsolutePath(),
+                            "--outputdir",
+                            toFile.getParentFile().getAbsolutePath()
+                    );
+                    builder.inheritIO().start();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 }

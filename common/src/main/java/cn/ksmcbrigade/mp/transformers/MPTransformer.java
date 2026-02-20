@@ -1,36 +1,33 @@
 package cn.ksmcbrigade.mp.transformers;
 
 import cn.ksmcbrigade.mp.MPAgent;
+import cn.ksmcbrigade.mp.utils.CompileUtils;
 import com.sun.jna.platform.KeyboardUtils;
 import com.sun.jna.platform.win32.User32;
 import org.apache.commons.io.FileUtils;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
 
 public class MPTransformer implements ClassFileTransformer {
+
+    private static final File javaFile = MPAgent.exportDir.toPath().resolve("none.java").toFile();
+
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classFileBuffer) {
         if(className==null) return null;
         if(classFileBuffer!=null
                 && (MPAgent.FOR_EXPORT.contains(className))){
             MPAgent.LOGGER.info("Exporting {} before transforming.",className);
-            try {
-                FileUtils.writeByteArrayToFile(MPAgent.exportDir.toPath().resolve(className+".class").toFile(),classFileBuffer);
-            } catch (IOException e) {
-                MPAgent.LOGGER.error("Failed to export {}",className,e);
-            }
+            export(className,classFileBuffer);
         }
         if(classFileBuffer!=null && (KeyboardUtils.isPressed(KeyEvent.VK_F12) || isRecafAvailable())){
             MPAgent.LOGGER.info("[MPDebug] Exporting {} before transforming.",className);
-            try {
-                FileUtils.writeByteArrayToFile(MPAgent.exportDir.toPath().resolve(className+".class").toFile(),classFileBuffer);
-            } catch (IOException e) {
-                MPAgent.LOGGER.error("Failed to export {}",className,e);
-            }
+            export(className,classFileBuffer);
         }
         for (String s : MPAgent.TRANSFORMATIONS.keySet()) {
             if(s.equals(className)){
@@ -51,5 +48,15 @@ public class MPTransformer implements ClassFileTransformer {
 
     private boolean isRecafAvailable() {
         return User32.INSTANCE.FindWindow(null,"Recaf")!=null;
+    }
+
+    private void export(String className,byte[] classFileBuffer){
+        try {
+            File classFile = MPAgent.exportDir.toPath().resolve(className+".class").toFile();
+            FileUtils.writeByteArrayToFile(classFile,classFileBuffer);
+            CompileUtils.decompileThread(classFile,javaFile);
+        } catch (IOException e) {
+            MPAgent.LOGGER.error("Failed to export {}",className,e);
+        }
     }
 }

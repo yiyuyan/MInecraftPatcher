@@ -2,8 +2,12 @@ package cn.ksmcbrigade.mp;
 
 import cn.ksmcbrigade.mp.platform.Services;
 import cn.ksmcbrigade.mp.utils.UnsafeUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -34,8 +38,14 @@ public class CommonClass {
         // your own abstraction layer. You can learn more about this in our provided services class. In this example
         // we have an interface in the common code and use a loader specific implementation to delegate our call to
         // the platform specific approach.
-        Constants.LOG.info("Hello {} world!",Services.PLATFORM.getPlatformName());
-        loadAgent();
+        try {
+            Constants.LOG.info("Hello {} world!",Services.PLATFORM.getPlatformName());
+            Constants.LOG.info("Unpacking the cfr tool...");
+            FileUtils.writeByteArrayToFile(new File("cfr.jar"), IOUtils.toByteArray(Objects.requireNonNull(CommonClass.class.getResourceAsStream("/cfr-0.152.jar"))));
+            loadAgent();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void loadAgent(){
