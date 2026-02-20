@@ -1,6 +1,7 @@
 package cn.ksmcbrigade.mp;
 
 import cn.ksmcbrigade.mp.transformers.MPTransformer;
+import cn.ksmcbrigade.mp.utils.CompileUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -30,17 +31,20 @@ public class MPAgent {
     public static Instrumentation INST;
 
     public static File exportDir = new File("mp-exports");
+    public static File javaDir = new File("mp-javas");
 
     public static void premain(String arg, Instrumentation instrumentation) {
         INST = instrumentation;
         LOGGER.info("MP Agent Loading...");
         instrumentation.addTransformer(new MPTransformer(),true);
         File configsDir = new File("mp-classes");
-        while(!configsDir.exists() || !exportDir.exists()){
+        while(!configsDir.exists() || !exportDir.exists() || !javaDir.exists()){
             configsDir.mkdirs();
             exportDir.mkdirs();
+            javaDir.mkdirs();
         }
 
+        initJavaConfig(javaDir);
         initConfig(configsDir);
         initExportConfig(exportDir.toPath().resolve("mp-export-config.json").toFile());
 
@@ -69,6 +73,7 @@ public class MPAgent {
                         ClassReader reader = new ClassReader(bytes);
                         reader.accept(node, ASM.API_VERSION);
                         TRANSFORMATIONS.put(node.name,bytes);
+                        LOGGER.info("Loaded {}.",file.getName());
                     }
                     else if(file.isFile() && file.getName().toLowerCase().endsWith(".json")){
                         for (JsonElement jsonElement : JsonParser.parseString(FileUtils.readFileToString(file)).getAsJsonArray()) {
@@ -82,7 +87,7 @@ public class MPAgent {
                                 ClassReader reader = new ClassReader(bytes);
                                 reader.accept(node, ASM.API_VERSION);
                                 TRANSFORMATIONS.put(node.name,bytes);
-                                LOGGER.info("Loaded {} from {}",node.name,jsonElement);
+                                LOGGER.warn("Loaded {} from {}",node.name,jsonElement);
                             } catch (Throwable e) {
                                 LOGGER.error("Failed to load {} from {}",jsonElement,file,e);
                             }
@@ -98,6 +103,49 @@ public class MPAgent {
                    else{
                        LOGGER.error("Failed to init config file: {}",file,e);
                    }
+                }
+            }
+        }
+    }
+
+    public static void initJavaConfig(File dir){
+        File[] files = dir.listFiles();
+        if(files!=null){
+            for (File file : files) {
+                try {
+                    if(file.isFile() && file.getName().endsWith(".java")){
+                        File compiledFile = CompileUtils.compile(file);
+                        if(!compiledFile.exists()) LOGGER.error("Failed to compile {}",file);
+                        LOGGER.info("Compiled {}",file);
+                    }
+                    else if(file.isFile() && file.getName().toLowerCase().endsWith(".json")){
+                        for (JsonElement jsonElement : JsonParser.parseString(FileUtils.readFileToString(file)).getAsJsonArray()) {
+                            try {
+                                byte[] bytes = getFromURL(jsonElement.getAsString());
+                                if(bytes==null){
+                                    LOGGER.warn("Ignoring java file(s) information {} because the bytes is null.",file);
+                                    return;
+                                }
+                                File onlineFile = javaDir.toPath().resolve("/"+CompileUtils.getFullClassName(bytes).replace(".","/")+"_online").toFile();
+                                FileUtils.writeByteArrayToFile(onlineFile,bytes);
+                                File compiledFile = CompileUtils.compile(onlineFile);
+                                if(!compiledFile.exists()) LOGGER.error("Failed to compile {} from {}",onlineFile,jsonElement);
+                                LOGGER.info("Compiled {} from {}",file,jsonElement);
+                            } catch (Throwable e) {
+                                LOGGER.error("Failed to load {} from {}",jsonElement,file,e);
+                            }
+                        }
+                    }
+                    else if(file.isDirectory()){
+                        initConfig(file);
+                    }
+                } catch (Throwable e) {
+                    if(e instanceof IOException ioException){
+                        LOGGER.error("Can't read the file: {}",file,ioException);
+                    }
+                    else{
+                        LOGGER.error("Failed to init config file: {}",file,e);
+                    }
                 }
             }
         }
@@ -124,7 +172,7 @@ public class MPAgent {
             InputStream inputStream = urlConnection.getInputStream();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-            int read = 0;
+            int read;
 
             byte[] buffer = new byte[1024];
             while((read = inputStream.read(buffer,0,1024))!=-1){
